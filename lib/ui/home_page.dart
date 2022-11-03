@@ -1,3 +1,4 @@
+import 'package:architecture_repository_example/controllers/person_controller.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -36,8 +37,8 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
-          const Expanded(
-            child: PeopleListView(),
+          Expanded(
+            child: PeopleListView(personController: personController),
           )
         ],
       ),
@@ -47,8 +48,10 @@ class HomePage extends StatelessWidget {
 
 class PeopleListView extends StatelessWidget {
   const PeopleListView({
-    Key? key,
+    Key? key, required this.personController,
   }) : super(key: key);
+
+  final PersonController personController;
 
   @override
   Widget build(BuildContext context) {
