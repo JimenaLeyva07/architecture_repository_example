@@ -15,7 +15,6 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController ageController = TextEditingController();
 
   void addData(){
-    print("caballo");
     setState(() {
       personController.add(PersonModel(nombre: nameController.text, edad: int.parse(ageController.text)));
     });
@@ -43,18 +42,17 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: 300,
                   height: 50,
-                  child: ElevatedButton.icon(onPressed: () {
-                    addData();
-                    setState(() {
-      
-    });
-                  }, icon: const Icon(Icons.person_add), label: const Text("Agregar"),),
+                  child: ElevatedButton.icon(
+                    onPressed: addData, 
+                    icon: const Icon(Icons.person_add), 
+                    label: const Text("Agregar"),
+                    ),
                 )
               ],
             ),
           ),
-          const Expanded(
-            child: PeopleListView(),
+          Expanded(
+            child: PeopleListView(personController: personController),
           )
         ],
       ),
@@ -64,8 +62,10 @@ class _HomePageState extends State<HomePage> {
 
 class PeopleListView extends StatelessWidget {
   const PeopleListView({
-    Key? key,
+    Key? key, required this.personController,
   }) : super(key: key);
+
+  final PersonController personController;
 
   @override
   Widget build(BuildContext context) {
@@ -73,25 +73,23 @@ class PeopleListView extends StatelessWidget {
       future: personController.getPeople(),
       builder: (BuildContext context, AsyncSnapshot<List<PersonModel>> snapshot) { 
         List<PersonModel> peopleList = snapshot.data??[];
-        print(peopleList);
-         return ListView.builder(
-      itemCount: peopleList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 32.0),
-          child: ListTile(
-            title: Text(peopleList[index].nombre), 
-            subtitle: Text(peopleList[index].edad.toString()), 
-            leading: const Icon(Icons.person), 
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), 
-            tileColor: Colors.grey[200],
-            ),
-        );
+        return ListView.builder(
+        itemCount: peopleList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 32.0),
+            child: ListTile(
+              title: Text(peopleList[index].nombre), 
+              subtitle: Text(peopleList[index].edad.toString()), 
+              leading: const Icon(Icons.person), 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), 
+              tileColor: Colors.grey[200],
+              ),
+          );
         },
       );      
      },
-    );
-   
+    );   
   }
 }
 
