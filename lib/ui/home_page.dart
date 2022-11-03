@@ -1,11 +1,25 @@
+import 'package:architecture_repository_example/controllers/person_controller.dart';
+import 'package:architecture_repository_example/models/person_model.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final TextEditingController nameController = TextEditingController();
+
   final TextEditingController ageController = TextEditingController();
 
+  void addData(){
+    print("caballo");
+    setState(() {
+      personController.add(PersonModel(nombre: nameController.text, edad: int.parse(ageController.text)));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +44,10 @@ class HomePage extends StatelessWidget {
                   width: 300,
                   height: 50,
                   child: ElevatedButton.icon(onPressed: () {
-                    
+                    addData();
+                    setState(() {
+      
+    });
                   }, icon: const Icon(Icons.person_add), label: const Text("Agregar"),),
                 )
               ],
@@ -52,21 +69,29 @@ class PeopleListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 10,
+    return FutureBuilder(
+      future: personController.getPeople(),
+      builder: (BuildContext context, AsyncSnapshot<List<PersonModel>> snapshot) { 
+        List<PersonModel> peopleList = snapshot.data??[];
+        print(peopleList);
+         return ListView.builder(
+      itemCount: peopleList.length,
       itemBuilder: (BuildContext context, int index) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 32.0),
           child: ListTile(
-            title: Text("Jimena"), 
-            subtitle: Text("25"), 
-            leading: Icon(Icons.person), 
+            title: Text(peopleList[index].nombre), 
+            subtitle: Text(peopleList[index].edad.toString()), 
+            leading: const Icon(Icons.person), 
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), 
             tileColor: Colors.grey[200],
             ),
         );
         },
-      );
+      );      
+     },
+    );
+   
   }
 }
 
